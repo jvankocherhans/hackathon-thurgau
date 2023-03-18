@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  hackathon:
+    build: 
+      context: ./
+    ports:
+      - 55557:55557
