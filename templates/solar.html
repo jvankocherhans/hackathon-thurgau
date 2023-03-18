@@ -1,0 +1,73 @@
+{% extends "root.html" %}
+
+{% block style %}{% endblock %}
+
+{% block title %}template{% endblock %}
+
+{% block main %}
+<h1>Potenzielle Solarenrgie einer Gemeinde von Jan-Dez</h1>
+	
+	<div>
+		<label for="gemeinde">Gemeinde:</label>
+		<select id="gemeinde" onchange="updateChart()">
+			<option value="Gemeinde1">Gemeinde 1</option>
+			<option value="Gemeinde2">Gemeinde 2</option>
+			<option value="Gemeinde3">Gemeinde 3</option>
+		</select>
+	</div>
+
+	<canvas id="myChart"></canvas>
+
+	<script>
+		// Daten für die Gemeinden
+		var gemeinde1Data = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
+		var gemeinde2Data = [20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130];
+		var gemeinde3Data = [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140];
+
+		// Standarddaten auf Gemeinde 1 setzen
+		var selectedData = gemeinde1Data;
+
+		// Chart erstellen
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var myChart = new Chart(ctx, {
+		    type: 'bar',
+		    data: {
+		        labels: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+		        datasets: [{
+		            label: 'Daten',
+		            data: selectedData,
+		            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+		            borderColor: 'rgba(255, 99, 132, 1)',
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});
+
+		// Funktion zum Aktualisieren des Charts
+		function updateChart() {
+			var dropdown = document.getElementById('gemeinde');
+			var selectedValue = dropdown.options[dropdown.selectedIndex].value;
+
+			if (selectedValue === 'Gemeinde1') {
+				selectedData = gemeinde1Data;
+			} else if (selectedValue === 'Gemeinde2') {
+				selectedData = gemeinde2Data;
+			} else if (selectedValue === 'Gemeinde3') {
+				selectedData = gemeinde3Data;
+			}
+
+			myChart.data.datasets[0].data = selectedData;
+			myChart.update();
+		}
+	</script>
+
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "root.html" %}
+
+{% block style %}{% endblock %}
+
+{% block title %}minenergie{% endblock %}
+
+{% block main %}
+
+<h1>Minenergievergleich der Gemeinden</h1>
+
+<form>
+
+  {% for item in gmde %}
+
+    <label>
+      <input type="checkbox" name="city" value="{{item}}"> {{item}}
+    </label>
+
+  {% endfor %}
+  </form>
+
+<canvas id="minergie-chart"></canvas>
+
+<canvas id="minergie-chart"></canvas>
+<script>
+  // Testdaten
+  var data = {
+    labels: {{ gmde | safe}},
+    datasets: [
+      {
+        label: "Minergie",
+        data: {{ minergie | safe }},
+      },
+      {
+        label: "Minergie_Eco",
+        data: {{ minergie_eco | safe }},
+      },
+      {
+        label: "Minergie_A",
+        data: {{ minergie_a | safe }},
+      },
+      {
+        label: "Minergie_A_Eco",
+        data: {{ minergie_a_eco | safe }},
+      },
+      {
+        label: "Minergie_P",
+        data: {{ minergie_p | safe }},
+      },
+      {
+        label: "Minergie_P_Eco",
+        data: {{ minergie_p_eco | safe }},
+      },
+    ],
+  };
+
+  var options = {
+    title: {
+      display: true,
+      text: "Minergie Haushalte pro Ort",
+      fontSize: 20,
+    },
+    scales: {
+      xAxes: [
+        {
+          stacked: true,
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+      yAxes: [
+        {
+          stacked: true,
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+  };
+
+  var chart = new Chart("minergie-chart", {
+    type: "bar",
+    data: data,
+    options: options,
+  });
+
+  // Filterfunktion
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+  checkboxes.forEach(function (checkbox) {
+    checkbox.addEventListener("change", updateChart);
+  });
+
+  updateChart(); // Aufruf der Filterfunktion beim Laden der Seite
+
+  function updateChart() {
+    var selectedCities = [];
+    checkboxes.forEach(function (checkbox) {
+      if (checkbox.checked) {
+        selectedCities.push(checkbox.value);
+      }
+    });
+
+    var filteredData = {
+      labels: selectedCities,
+      datasets: [],
+    };
+
+    data.datasets.forEach(function (dataset) {
+      var filteredDataset = {
+        label: dataset.label,
+        backgroundColor: dataset.backgroundColor,
+        data: [],
+      };
+
+      dataset.data.forEach(function (value, index) {
+        if (selectedCities.indexOf(data.labels[index]) !== -1) {
+          filteredDataset.data.push(value);
+        }
+      });
+
+      filteredData.datasets.push(filteredDataset);
+    });
+
+    chart.data = filteredData;
+    chart.update();
+  }
+</script>
+
+{% endblock %}

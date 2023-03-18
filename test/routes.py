@@ -10,4 +10,4 @@ def root():
     # return render_template("base.html", names=..., arten=...)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=55557, host="0.0.0.0")
+    app.run(debug=True, port=55555, host="0.0.0.0")
